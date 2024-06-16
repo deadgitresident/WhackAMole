@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Whack-a-Mole</title>
+  <style>
+    .game-container {
+      width: 400px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hole {
+      width: 100px;
+      height: 100px;
+      border: 2px solid #000;
+      display: inline-block;
+      position: relative;
+      margin: 10px;
+    }
+
+    .mole {
+      width: 80px;
+      height: 80px;
+      background-color: #000;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: none;
+    }
+
+    #score {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    #timer {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Whack-a-Mole</h1>
+    <p id="score">Score: 0</p>
+    <p id="timer">Time remaining: <span id="time">30</span> seconds</p>
+    <div id="game-board">
+      <div class="hole" onclick="whack(event)">
+        <div class="mole"></div>
+      </div>
+      <div class="hole" onclick="whack(event)">
+        <div class="mole"></div>
+      </div>
+      <div class="hole" onclick="whack(event)">
+        <div class="mole"></div>
+      </div>
+      <div class="hole" onclick="whack(event)">
+        <div class="mole"></div>
+      </div>
+      <div class="hole" onclick="whack(event)">
+        <div class="mole"></div>
+      </div>
+      <div class="hole" onclick="whack(event)">
+        <div class="mole"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const holes = Array.from(document.getElementsByClassName('hole'));
+    const moles = Array.from(document.getElementsByClassName('mole'));
+    const scoreDisplay = document.getElementById('score');
+    const timeDisplay = document.getElementById('time');
+    let score = 0;
+    let time = 30;
+    let gameTimer;
+
+    // Function to start the game
+    function startGame() {
+      score = 0;
+      time = 30;
+      scoreDisplay.textContent = 'Score: 0';
+      timeDisplay.textContent = `Time remaining: ${time} seconds`;
+      clearInterval(gameTimer);
+      gameTimer = setInterval(countdown, 1000);
+      popMole();
+    }
+
+    // Function to countdown the time
+    function countdown() {
+      time--;
+      timeDisplay.textContent = `Time remaining: ${time} seconds`;
+
+      if (time === 0) {
+        clearInterval(gameTimer);
+        alert(`Game over! Your score is ${score}`);
+      }
+    }
+
+    // Function to randomly pop up a mole
+    function popMole() {
+      const randomHole = holes[Math.floor(Math.random() * holes.length)];
+      const mole = randomHole.querySelector('.mole');
+      mole.style.display = 'block';
+
+      setTimeout(() => {
+        mole.style.display = 'none';
+        if (time > 0) {
+          popMole();
+        }
+      }, Math.random() * 2000 + 500);
+    }
+
+    // Function to whack a mole
+    function whack(event) {
+      if (event.target.classList.contains('mole')) {
+        event.target.style.display = 'none';
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+      }
+    }
+
+    // Start the game on page load
+    document.addEventListener('DOMContentLoaded', startGame);
+  </script>
+</body>
+</html>
